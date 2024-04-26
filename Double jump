@@ -13,9 +13,9 @@ local hasDoubleJumped = false
 
 local oldPower
 
-local TIME_BETWEEN_JUMPS = 0.1 -- The time before you can do another jump
+local TIME_BETWEEN_JUMPS = 0.001 -- The time before you can do another jump
 
-local DOUBLE_JUMP_POWER_MULTIPLIER = 2 -- The amount of times you can jump in the air 
+local DOUBLE_JUMP_POWER_MULTIPLIER = 1 -- The amount of times you can jump in the air 
 
 function onJumpRequest()
 
