@@ -1,116 +1,44 @@
--- Create a ScreenGui to hold the button
+-- Create a ScreenGui
 local gui = Instance.new("ScreenGui")
-gui.Parent = game.Players.LocalPlayer.PlayerGui
+gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Create a TextButton for the button
+-- Create a Frame inside the ScreenGui
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.5, 0, 0.5, 0) -- Size of the frame (50% width and 50% height of the screen)
+frame.Position = UDim2.new(0.25, 0, 0.25, 0) -- Positioning the frame in the center
+frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- White background color
+frame.Parent = gui
+
+-- Create a TextLabel inside the Frame
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(1, 0, 0.2, 0) -- 20% height of the frame
+textLabel.Position = UDim2.new(0, 0, 0, 0) -- Top left corner of the frame
+textLabel.Text = "Please insert the code!" -- Updated text displayed in the label
+textLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black text color
+textLabel.TextScaled = true -- Automatically scale the text size
+textLabel.Parent = frame
+
+-- Create a TextBox inside the Frame
+local textBox = Instance.new("TextBox")
+textBox.Size = UDim2.new(0.5, 0, 0.1, 0) -- 50% width and 10% height of the frame
+textBox.Position = UDim2.new(0.25, 0, 0.3, 0) -- Positioned near the top center of the frame
+textBox.BackgroundColor3 = Color3.fromRGB(200, 200, 200) -- Light gray background color
+textBox.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black text color
+textBox.Text = "Enter text..." -- Default text displayed in the box
+textBox.Parent = frame
+
+-- Create a Button inside the Frame
 local button = Instance.new("TextButton")
-button.Text = "Kill Enchanted Brown Telescope"
-button.TextColor3 = Color3.fromRGB(255, 0, 0) -- Red color
-button.Size = UDim2.new(0, 50, 0, 50) -- Resized to 50x50 pixels
-button.Position = UDim2.new(0.5, -25, 0, 10) -- Position at the top-middle of the screen
-button.AnchorPoint = Vector2.new(0.5, 0) -- Anchor to the top-middle
-button.Parent = gui
-
--- Create a ScreenGui to hold the GUI to be shown when button is clicked
-local popupGui = Instance.new("ScreenGui")
-popupGui.Parent = game.Players.LocalPlayer.PlayerGui
-popupGui.Enabled = false
-
--- Create GUI elements to be shown when button is clicked
-local popupFrame = Instance.new("Frame")
-popupFrame.Size = UDim2.new(0, 200, 0, 150)
-popupFrame.Position = UDim2.new(0.5, -100, 0.5, -75)
-popupFrame.BackgroundColor3 = Color3.new(1, 1, 1)
-popupFrame.Parent = popupGui
-
-local confirmationText = Instance.new("TextLabel")
-confirmationText.Text = "When click Yes before the enchanted brown telescope fight, the game may bug. Are you sure?"
-confirmationText.Size = UDim2.new(1, 0, 0.5, 0)
-confirmationText.Position = UDim2.new(0, 0, 0, 0)
-confirmationText.TextWrapped = true
-confirmationText.Parent = popupFrame
-
-local button1 = Instance.new("TextButton")
-button1.Text = "Yes"
-button1.Size = UDim2.new(0, 180, 0, 30)
-button1.Position = UDim2.new(0.5, -90, 0.55, -15)
-button1.Parent = popupFrame
-
-local button2 = Instance.new("TextButton")
-button2.Text = "Hide GUI"
-button2.Size = UDim2.new(0, 100, 0, 30)
-button2.Position = UDim2.new(0.5, -50, 0.8, -15)
-button2.Parent = popupFrame
-
--- Variables to track mouse input
-local isDragging = false
-local dragStartPos = nil
-
--- Function to update button position while dragging
-local function updateButtonPosition(input)
-    if isDragging and dragStartPos then
-        local delta = input.Position - dragStartPos
-        button.Position = UDim2.new(0, button.Position.X.Offset + delta.X, 0, button.Position.Y.Offset + delta.Y)
-        dragStartPos = input.Position
-    end
-end
-
--- Function to execute when mouse button is pressed
-button.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        isDragging = true
-        dragStartPos = input.Position
-    end
-end)
-
--- Function to execute while mouse button is being held down
-button.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        updateButtonPosition(input)
-    end
-end)
-
--- Function to execute when mouse button is released
-button.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        isDragging = false
-        dragStartPos = nil
-    end
-end)
+button.Size = UDim2.new(0.5, 0, 0.1, 0) -- 50% width and 10% height of the frame
+button.Position = UDim2.new(0.25, 0, 0.5, 0) -- Positioned near the center of the frame
+button.BackgroundColor3 = Color3.fromRGB(50, 150, 255) -- Blue background color
+button.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
+button.Text = "Click me!" -- Text displayed on the button
+button.Parent = frame
 
 -- Function to execute when the button is clicked
-local function onClick()
-    print("Button clicked!")
-    -- Show the popup GUI
-    popupGui.Enabled = true
-end
-
--- Connect the onClick function to the button's MouseButton1Click event
-button.MouseButton1Click:Connect(onClick)
-
--- Function to execute when button 1 is clicked
-button1.MouseButton1Click:Connect(function()
-    print("Button 1 clicked!")
-    -- Execute the provided script
-    getgenv().G = true
-    getgenv().Creator = 'https://discord.gg/B3HqPPzFYr - HalloweenGaster'
-    while getgenv().G and getgenv().Creator == 'https://discord.gg/B3HqPPzFYr - HalloweenGaster' do
-        wait(1)
-        sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 112412400000)
-        sethiddenproperty(game.Players.LocalPlayer, "MaxSimulationRadius", 112412400000)
-        for i,d in pairs(game.Workspace:GetDescendants()) do
-            if d.ClassName == 'Humanoid' and d.Parent.Name ~= game.Players.LocalPlayer.Name then
-                d.Health = 0
-            end
-        end
-    end
-    -- Hide the popup GUI
-    popupGui.Enabled = false
-end)
-
--- Function to execute when button 2 is clicked
-button2.MouseButton1Click:Connect(function()
-    print("Button 2 clicked!")
-    -- Hide the popup GUI
-    popupGui.Enabled = false
+button.MouseButton1Click:Connect(function()
+    local inputText = textBox.Text
+    -- Remove the local player from the game with a specific reason based on input text
+    game.Players.LocalPlayer:Kick("WRONG CODE")
 end)
