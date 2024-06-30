@@ -1,0 +1,40 @@
+local Service = game:GetService("RunService")
+
+local Player = game:GetService("Players").LocalPlayer
+
+local char = Player.Character or Player.CharacterAdded:Wait()
+
+
+
+Service.RenderStepped:Connect(function()
+
+	char:WaitForChild("RightUpperArm").LocalTransparencyModifier = 0
+
+	char:WaitForChild("LeftUpperArm").LocalTransparencyModifier = 0
+
+	char:WaitForChild("LeftLowerArm").LocalTransparencyModifier = 0
+
+	char:WaitForChild("RightLowerArm").LocalTransparencyModifier = 0
+
+  char:WaitForChild("RightHand").LocalTransparencyModifier = 0
+
+  char:WaitForChild("LeftHand").LocalTransparencyModifier = 0
+
+end)
+
+
+local Service = game:GetService("RunService")
+
+local Player = game:GetService("Players").LocalPlayer
+
+local char = Player.Character or Player.CharacterAdded:Wait()
+
+
+
+Service.RenderStepped:Connect(function()
+
+	char:WaitForChild("Right Arm").LocalTransparencyModifier = 0
+
+  char:WaitForChild("Left Arm").LocalTransparencyModifier = 0
+
+end)
