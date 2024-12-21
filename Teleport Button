@@ -80,7 +80,7 @@ button.MouseButton1Click:Connect(function()
 
             -- Calculate the position for teleporting the local player 1 stud behind the other HumanoidRootPart
             local direction = (humanoidRootPart.Position - otherHumanoidRootPart.Position).unit
-            local teleportPosition = otherHumanoidRootPart.Position + direction * -1  -- Move 1 stud behind
+            local teleportPosition = otherHumanoidRootPart.Position + direction * -3  -- Move 1 stud behind
 
             -- Teleport local player to the new position
             character:SetPrimaryPartCFrame(CFrame.new(teleportPosition, otherHumanoidRootPart.Position))
