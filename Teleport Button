@@ -1,57 +1,3 @@
-local player = game.Players.LocalPlayer  -- Lấy người chơi hiện tại
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")  -- Lấy HumanoidRootPart
-
--- Tạo ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = player:WaitForChild("PlayerGui")  -- Thêm vào PlayerGui
-screenGui.ResetOnSpawn = false
-
--- Tạo nút
-local button = Instance.new("TextButton")
-button.Size = UDim2.new(0, 45, 0, 45)  -- Kích thước 50x50 pixels
-button.Position = UDim2.new(1, -30, 0.5, 20)  -- Góc phải giữa
-button.AnchorPoint = Vector2.new(1, 0.5)  -- Điểm neo
-button.Text = "Teleport"
-button.TextScaled = true
-button.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5)  -- Màu xám ban đầu
-button.BackgroundTransparency = 0.25
-button.Parent = screenGui
-
--- Tạo UICorner để làm nút tròn
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0.5, 0)  -- Làm tròn nút
-uiCorner.Parent = button
-
--- Thêm âm thanh
-local teleportSound = Instance.new("Sound")
-teleportSound.SoundId = "rbxassetid://3077287610"  -- Asset ID của âm thanh
-teleportSound.Volume = 5  -- Âm lượng
-teleportSound.Parent = humanoidRootPart  -- Đặt âm thanh ở HumanoidRootPart
-
--- Hàm xử lý khi bấm nút
-button.MouseButton1Click:Connect(function()
-    -- Chơi âm thanh
-    teleportSound:Play()
-
-    -- Dịch chuyển player 20 studs về phía trước
-    local lookVector = humanoidRootPart.CFrame.LookVector
-    humanoidRootPart.CFrame = humanoidRootPart.CFrame + lookVector * 20
-
-    -- Thêm hiệu ứng màn hình
-    local lighting = game:GetService("Lighting")
-    local colorEffect = Instance.new("ColorCorrectionEffect")
-    colorEffect.TintColor = Color3.new(1, 1, 1)
-    colorEffect.Contrast = -2
-    colorEffect.Saturation = -1
-    colorEffect.Parent = lighting
-
-    -- Đợi 0.5 giây và xóa hiệu ứng
-    task.wait(0.2)
-    colorEffect:Destroy()
-end)
-
--- Back Button
 local player = game.Players.LocalPlayer
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player:WaitForChild("PlayerGui") -- Add to player's GUI
@@ -62,7 +8,7 @@ local button = Instance.new("TextButton")
 button.Size = UDim2.new(0, 45, 0, 45) -- 50x50 pixels
 button.Position = UDim2.new(1, -30, 0.5, -25) -- Right middle corner
 button.AnchorPoint = Vector2.new(1, 0.5) -- Anchor point at the right middle
-button.Text = "Stalk"
+button.Text = "Instinct"
 button.TextScaled = true
 button.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5) -- Initial gray color
 button.BackgroundTransparency = 0.25 -- Set transparency to 0.25
