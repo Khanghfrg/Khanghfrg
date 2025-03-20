@@ -1,3 +1,113 @@
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")  
+screenGui.Parent = player:WaitForChild("PlayerGui")  
+screenGui.ResetOnSpawn = false  
+
+local button = Instance.new("TextButton")  
+button.Size = UDim2.new(0, 85, 0, 85)  
+button.Position = UDim2.new(1, -10, 0.5, -100)  
+button.AnchorPoint = Vector2.new(1, 0.5)  
+button.Text = "Launch"  
+button.TextColor3 = Color3.fromRGB(255, 255, 255) -- Chữ màu trắng
+button.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Màu nền giống frame kia
+button.BackgroundTransparency = 0  
+button.Font = Enum.Font.Arcade -- Font Arcade giống với cái label trước
+button.TextScaled = true
+button.Parent = screenGui  
+
+local uiCorner = Instance.new("UICorner")  
+uiCorner.CornerRadius = UDim.new(0.5, 0)    
+uiCorner.Parent = button  
+
+-- Biến trạng thái
+local isFlying = false
+local bodyVelocity = nil
+local currentAnim = nil
+
+-- Hàm phát animation
+local function playAnimation(animationId, humanoid)
+    local animator = humanoid:FindFirstChildOfClass("Animator")
+    if animator then
+        local animation = Instance.new("Animation")
+        animation.AnimationId = "rbxassetid://" .. animationId
+        local track = animator:LoadAnimation(animation)
+        track:Play()
+        return track
+    end
+end
+
+-- Hàm xử lý toggle
+local function toggleLaunch()
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    
+    if not humanoid or not rootPart then return end
+
+    if isFlying then
+        -- DỪNG PHÓNG
+        isFlying = false
+        button.Text = "Launch"
+
+        -- Xóa lực đẩy
+        if bodyVelocity then
+            bodyVelocity:Destroy()
+            bodyVelocity = nil
+        end
+
+        -- Dừng animation
+        if currentAnim then
+            currentAnim:Stop()
+            currentAnim = nil
+        end
+
+        -- Trả tốc độ lại bình thường
+        humanoid.WalkSpeed = 16
+    else
+        -- BẮT ĐẦU PHÓNG
+        isFlying = true
+        button.Text = "Reset"
+
+        -- Phát Animation 1 (Chuẩn bị phóng)
+        local anim1 = playAnimation("18885932392", humanoid)
+        if anim1 then
+            anim1.Stopped:Wait() -- Đợi animation 1 kết thúc
+        end
+
+        -- Phát Animation 2 (Trong khi phóng)
+        currentAnim = playAnimation("18885939653", humanoid)
+
+        -- Đặt tốc độ của local player thành 0 để không bị ảnh hưởng
+        humanoid.WalkSpeed = 0
+
+        -- Tạo lực đẩy liên tục về phía trước
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.Velocity = rootPart.CFrame.LookVector * 40
+        bodyVelocity.MaxForce = Vector3.new(math.huge, 0, math.huge) -- Chỉ đẩy theo phương X và Z
+        bodyVelocity.Parent = rootPart
+    end
+end
+
+button.MouseButton1Click:Connect(toggleLaunch)
+
+-- Lắng nghe khi nhân vật respawn
+local function onCharacterAdded(character)
+    local humanoid = character:WaitForChild("Humanoid")
+
+    humanoid.Died:Connect(function()
+        isFlying = false -- Đặt lại trạng thái để tránh lỗi
+        repeat wait() until player.Character
+        onCharacterAdded(player.Character) -- Cập nhật lại nhân vật mới
+    end)
+end
+
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+player.CharacterAdded:Connect(onCharacterAdded)
+
+
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
@@ -138,116 +248,3 @@ end)
 
 -- Chạy vòng lặp cập nhật mỗi 0.001 giây
 RunService.Heartbeat:Connect(checkAnimations)
-
-if player.Character then
-    onCharacterAdded(player.Character)
-end
-player.CharacterAdded:Connect(onCharacterAdded)
-
-local player = game.Players.LocalPlayer
-local screenGui = Instance.new("ScreenGui")  
-screenGui.Parent = player:WaitForChild("PlayerGui")  
-screenGui.ResetOnSpawn = false  
-
-local button = Instance.new("TextButton")  
-button.Size = UDim2.new(0, 85, 0, 85)  
-button.Position = UDim2.new(1, -10, 0.5, -100)  
-button.AnchorPoint = Vector2.new(1, 0.5)  
-button.Text = "Launch"  
-button.TextColor3 = Color3.fromRGB(255, 255, 255) -- Chữ màu trắng
-button.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Màu nền giống frame kia
-button.BackgroundTransparency = 0  
-button.Font = Enum.Font.Arcade -- Font Arcade giống với cái label trước
-button.TextScaled = true
-button.Parent = screenGui  
-
-local uiCorner = Instance.new("UICorner")  
-uiCorner.CornerRadius = UDim.new(0.5, 0)    
-uiCorner.Parent = button  
-
--- Biến trạng thái
-local isFlying = false
-local bodyVelocity = nil
-local currentAnim = nil
-
--- Hàm phát animation
-local function playAnimation(animationId, humanoid)
-    local animator = humanoid:FindFirstChildOfClass("Animator")
-    if animator then
-        local animation = Instance.new("Animation")
-        animation.AnimationId = "rbxassetid://" .. animationId
-        local track = animator:LoadAnimation(animation)
-        track:Play()
-        return track
-    end
-end
-
--- Hàm xử lý toggle
-local function toggleLaunch()
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    
-    if not humanoid or not rootPart then return end
-
-    if isFlying then
-        -- DỪNG PHÓNG
-        isFlying = false
-        button.Text = "Launch"
-
-        -- Xóa lực đẩy
-        if bodyVelocity then
-            bodyVelocity:Destroy()
-            bodyVelocity = nil
-        end
-
-        -- Dừng animation
-        if currentAnim then
-            currentAnim:Stop()
-            currentAnim = nil
-        end
-
-        -- Trả tốc độ lại bình thường
-        humanoid.WalkSpeed = 16
-    else
-        -- BẮT ĐẦU PHÓNG
-        isFlying = true
-        button.Text = "Reset"
-
-        -- Phát Animation 1 (Chuẩn bị phóng)
-        local anim1 = playAnimation("18885932392", humanoid)
-        if anim1 then
-            anim1.Stopped:Wait() -- Đợi animation 1 kết thúc
-        end
-
-        -- Phát Animation 2 (Trong khi phóng)
-        currentAnim = playAnimation("18885939653", humanoid)
-
-        -- Đặt tốc độ của local player thành 0 để không bị ảnh hưởng
-        humanoid.WalkSpeed = 0
-
-        -- Tạo lực đẩy liên tục về phía trước
-        bodyVelocity = Instance.new("BodyVelocity")
-        bodyVelocity.Velocity = rootPart.CFrame.LookVector * 40
-        bodyVelocity.MaxForce = Vector3.new(math.huge, 0, math.huge) -- Chỉ đẩy theo phương X và Z
-        bodyVelocity.Parent = rootPart
-    end
-end
-
-button.MouseButton1Click:Connect(toggleLaunch)
-
--- Lắng nghe khi nhân vật respawn
-local function onCharacterAdded(character)
-    local humanoid = character:WaitForChild("Humanoid")
-
-    humanoid.Died:Connect(function()
-        isFlying = false -- Đặt lại trạng thái để tránh lỗi
-        repeat wait() until player.Character
-        onCharacterAdded(player.Character) -- Cập nhật lại nhân vật mới
-    end)
-end
-
-if player.Character then
-    onCharacterAdded(player.Character)
-end
-player.CharacterAdded:Connect(onCharacterAdded)
