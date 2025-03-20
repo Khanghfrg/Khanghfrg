@@ -106,7 +106,6 @@ if player.Character then
 end
 player.CharacterAdded:Connect(onCharacterAdded)
 
-
 frame.Size = UDim2.new(0, 200, 0, 60)
 frame.Position = UDim2.new(0, 10, 0, 10)
 frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
