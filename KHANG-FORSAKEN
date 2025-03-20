@@ -177,7 +177,7 @@ local function toggleLaunch()
         button.Text = "Reset"  
         humanoid.PlatformStand = true  
         game.Workspace.Gravity = 0  
-        rootPart.Velocity = rootPart.CFrame.LookVector * 40  
+        rootPart.Velocity = rootPart.CFrame.LookVector * 16 
     else
         button.Text = "Launch"  
         humanoid.PlatformStand = false  
