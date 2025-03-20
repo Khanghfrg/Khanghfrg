@@ -1,0 +1,244 @@
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")  
+screenGui.Parent = player:WaitForChild("PlayerGui")  
+screenGui.ResetOnSpawn = false  
+
+-- Tạo Frame chính
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 150)
+frame.Position = UDim2.new(0, 10, 0, 10)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Màu nền giống button
+frame.BackgroundTransparency = 0.25
+frame.Parent = screenGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0.25, 0)
+uiCorner.Parent = frame
+
+-- Tạo tiêu đề
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Killer Skill Right Now"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.Arcade
+title.TextScaled = true
+title.Parent = frame
+
+-- Tạo label hiển thị animation
+local animationLabel = Instance.new("TextLabel")
+animationLabel.Size = UDim2.new(1, -10, 1, -40)
+animationLabel.Position = UDim2.new(0, 5, 0, 35)
+animationLabel.BackgroundTransparency = 1
+animationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+animationLabel.Font = Enum.Font.Arcade
+animationLabel.TextScaled = true
+animationLabel.Text = ""
+animationLabel.Parent = frame
+
+-- Danh sách animation cần theo dõi
+local trackedAnimations = {
+    ["Slash"] = {105458270463374, 126830014841198, 83829782357897},
+    ["Corrupt Energy"] = {127172483138092},
+    ["Digital Footprint"] = {86758834842420},
+    ["Punch"] = {18885909645},
+    ["Walkspeed Overdrive"] = {18885932392, 18885939653},
+    ["Corrupt Nature"] = {18885919947},
+    ["Pizza Delivery"] = {18885915433},
+    ["Behead"] = {126355327951215},
+    ["Raging Pace"] = {85591573377728, 86451881483688},
+    ["Gashing Wound"] = {121086746534252, 101736016625776},
+    ["Mass Infection"] = {116814116277716},
+    ["Entanglement"] = {86799093901669},
+    ["Unstable Eyes"] = {119429069577280},
+    ["Summon Minions"] = {116996902830888}
+}
+
+-- Hàm kiểm tra animation có trong danh sách không
+local function getAnimationName(animationId)
+    for name, ids in pairs(trackedAnimations) do
+        for _, id in pairs(ids) do
+            if tostring(id) == tostring(animationId) then
+                return name
+            end
+        end
+    end
+    return nil
+end
+
+-- Hàm cập nhật danh sách animation
+local function updateAnimations()
+    local activeAnimations = {}
+
+    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player then -- BỎ QUA LOCAL PLAYER
+            local character = otherPlayer.Character
+            if character then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    local animator = humanoid:FindFirstChildOfClass("Animator")
+                    if animator then
+                        for _, track in pairs(animator:GetPlayingAnimationTracks()) do
+                            local animName = getAnimationName(track.Animation.AnimationId:match("%d+"))
+                            if animName then
+                                activeAnimations[animName] = true
+                                -- Highlight người chơi khác
+                                if not character:FindFirstChild("Highlight") then
+                                    local highlight = Instance.new("Highlight")
+                                    highlight.FillColor = Color3.fromRGB(255, 0, 0) -- Màu đỏ
+                                    highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+                                    highlight.Parent = character
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- Cập nhật label
+    local displayText = ""
+    for name, _ in pairs(activeAnimations) do
+        displayText = displayText .. name .. "\n"
+    end
+    animationLabel.Text = displayText
+
+    -- Xóa highlight nếu người chơi không còn animation
+    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player then
+            local character = otherPlayer.Character
+            if character and character:FindFirstChild("Highlight") then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    local animator = humanoid:FindFirstChildOfClass("Animator")
+                    local hasAnimation = false
+                    for _, track in pairs(animator:GetPlayingAnimationTracks()) do
+                        if getAnimationName(track.Animation.AnimationId:match("%d+")) then
+                            hasAnimation = true
+                            break
+                        end
+                    end
+                    if not hasAnimation then
+                        character:FindFirstChild("Highlight"):Destroy()
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Cập nhật mỗi 0.001 giây
+while true do
+    updateAnimations()
+    wait(0.001)
+end
+
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")  
+screenGui.Parent = player:WaitForChild("PlayerGui")  
+screenGui.ResetOnSpawn = false  
+
+local button = Instance.new("TextButton")  
+button.Size = UDim2.new(0, 85, 0, 85)  
+button.Position = UDim2.new(1, -10, 0.5, -100)  
+button.AnchorPoint = Vector2.new(1, 0.5)  
+button.Text = "Launch"  
+button.TextColor3 = Color3.fromRGB(255, 255, 255) -- Chữ màu trắng
+button.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Màu nền giống frame kia
+button.BackgroundTransparency = 0.25  
+button.Font = Enum.Font.Arcade -- Font Arcade giống với cái label trước
+button.TextScaled = true
+button.Parent = screenGui  
+
+local uiCorner = Instance.new("UICorner")  
+uiCorner.CornerRadius = UDim.new(0.5, 0)    
+uiCorner.Parent = button  
+
+-- Biến trạng thái
+local isFlying = false
+local bodyVelocity = nil
+local currentAnim = nil
+
+-- Hàm phát animation
+local function playAnimation(animationId, humanoid)
+    local animator = humanoid:FindFirstChildOfClass("Animator")
+    if animator then
+        local animation = Instance.new("Animation")
+        animation.AnimationId = "rbxassetid://" .. animationId
+        local track = animator:LoadAnimation(animation)
+        track:Play()
+        return track
+    end
+end
+
+-- Hàm xử lý toggle
+local function toggleLaunch()
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    
+    if not humanoid or not rootPart then return end
+
+    if isFlying then
+        -- DỪNG PHÓNG
+        isFlying = false
+        button.Text = "Launch"
+
+        -- Xóa lực đẩy
+        if bodyVelocity then
+            bodyVelocity:Destroy()
+            bodyVelocity = nil
+        end
+
+        -- Dừng animation
+        if currentAnim then
+            currentAnim:Stop()
+            currentAnim = nil
+        end
+
+        -- Trả tốc độ lại bình thường
+        humanoid.WalkSpeed = 16
+    else
+        -- BẮT ĐẦU PHÓNG
+        isFlying = true
+        button.Text = "Reset"
+
+        -- Phát Animation 1 (Chuẩn bị phóng)
+        local anim1 = playAnimation("18885932392", humanoid)
+        if anim1 then
+            anim1.Stopped:Wait() -- Đợi animation 1 kết thúc
+        end
+
+        -- Phát Animation 2 (Trong khi phóng)
+        currentAnim = playAnimation("18885939653", humanoid)
+
+        -- Đặt tốc độ của local player thành 0 để không bị ảnh hưởng
+        humanoid.WalkSpeed = 0
+
+        -- Tạo lực đẩy liên tục về phía trước
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.Velocity = rootPart.CFrame.LookVector * 40
+        bodyVelocity.MaxForce = Vector3.new(math.huge, 0, math.huge) -- Chỉ đẩy theo phương X và Z
+        bodyVelocity.Parent = rootPart
+    end
+end
+
+button.MouseButton1Click:Connect(toggleLaunch)
+
+-- Lắng nghe khi nhân vật respawn
+local function onCharacterAdded(character)
+    local humanoid = character:WaitForChild("Humanoid")
+
+    humanoid.Died:Connect(function()
+        isFlying = false -- Đặt lại trạng thái để tránh lỗi
+        repeat wait() until player.Character
+        onCharacterAdded(player.Character) -- Cập nhật lại nhân vật mới
+    end)
+end
+
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+player.CharacterAdded:Connect(onCharacterAdded)
